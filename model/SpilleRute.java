@@ -22,33 +22,19 @@ public class SpilleRute extends JLabel{
     Zombie hitBox = null;
     Kule kule = null;
 
-    //BufferedImage img;
-    //ImageIcon kuleBilde;
-//
-    //BufferedImage img2;
-    //ImageIcon zombieBilde;
-
     public SpilleRute(int x, int y, SpillBrett g){
         this.x = x;
         this.y = y;
         gui = g;
         brett = gui.hentSpilleRuter();
-
-        //try {img = ImageIO.read(new File("bilder/kule.png"));} catch (Exception e){System.out.println(e);}
-        //kuleBilde = new ImageIcon(img);
-//
-        //try {img2 = ImageIO.read(new File("bilder/zombie.jpg"));} catch (Exception e){System.out.println(e);}
-        //zombieBilde = new ImageIcon(img2);
     }
 
     public void settKule(Kule k){
         if (zombie != null){
             zombie.treff();
             k.harTruffet();
-            System.out.println("Zombie");
         }
         else if (hitBox != null){
-            System.out.println("Hitbox");
             hitBox.treff();
             k.harTruffet();
         } else {
