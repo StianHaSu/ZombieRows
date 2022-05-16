@@ -1,8 +1,12 @@
-package model;
+package model.ammunisjon;
 import java.util.ArrayList;
 
 import view.*;
 import control.*;
+import model.Klokke;
+import model.SpilleRute;
+import model.vaapen.*;
+import java.awt.*;
 
 public class Kule {
     int rad;
@@ -10,13 +14,15 @@ public class Kule {
     
     SpillBrett spillBrett;
     SpilleRute[][] sr;
-    Kanon kanon;
+    Vaapen vaapen;
     boolean harTruffet = false;
-    
+    long hurtighet = 50;
+
+    Color color = new Color(255,217,102);
     Thread kulensKlokke;
     
-    public Kule(int pos, SpillBrett sb, Kanon k){
-        kanon = k;
+    public Kule(int pos, SpillBrett sb, Vaapen k){
+        vaapen = k;
 
         kolonne = pos;
         rad = 28;
@@ -35,7 +41,7 @@ public class Kule {
         if (rad > 0)rad--;
         else {
             sr[x1][kolonne].settBlank();
-            kanon.fjernKule(this);
+            vaapen.fjernKule(this);
             return false;
         }
         
@@ -48,13 +54,25 @@ public class Kule {
     }
 
     public void harTruffet(){
-        kanon.fjernKule(this);
+        vaapen.fjernKule(this);
         sr[rad][kolonne].settBlank();
         harTruffet = true;
     }
 
     public boolean sjekkTreff(){
         return harTruffet;
+    }
+
+    public int hentSkade(){
+        return vaapen.hentSkade();
+    }
+
+    public Color hentFarge(){
+        return color;
+    }
+
+    public long hentHurtighet(){
+        return hurtighet;
     }
 
 }

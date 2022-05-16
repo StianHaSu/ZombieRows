@@ -1,13 +1,15 @@
-package model;
+package model.vaapen;
 
 import java.util.ArrayList;
 
 import control.*;
+import model.ammunisjon.*;
 import view.*;
 
-public class Kanon {
+public class Kanon implements Vaapen{
     int pos;
     int helse = 10;
+    int skade = 1;
 
     static int maksKuler = 8;
     static int antKuler = 0;
@@ -34,4 +36,13 @@ public class Kanon {
         antKuler--;
         kulerSkutt.remove(k);
     }
+
+    public void oppgraderVaapen(){
+        skade++;
+    }
+
+    public int hentSkade(){
+        return skade;
+    }
+
 }

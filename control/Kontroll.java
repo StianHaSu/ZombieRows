@@ -2,21 +2,25 @@ package control;
 
 import view.*;
 import model.*;
+import model.vaapen.Kanon;
+import model.vaapen.Shotgun;
 import model.zombier.Zombie;
+import model.vaapen.*;
 
 import java.util.ArrayList;
 
 public class Kontroll {
     SpillBrett brett;
-    Kanon kanonEn, kanonTo, kanonTre, kanonFire, kanonFem;
+    Vaapen kanonEn, kanonTo, kanonTre, kanonFire, kanonFem;
     ArrayList<Zombie> zombier = new ArrayList<>();
     Thread rundeKlokke = null;
 
-    int antZombierPerRunde = 2;
-    int antZombier = 2;
+    int antZombierPerRunde = 5;
+    int antZombier = 5;
     int runde = 1;
 
     int score = 0;
+    int penger = 0;
 
     int spillerHelse = 5;
 
@@ -24,9 +28,9 @@ public class Kontroll {
         brett = new SpillBrett(this);
         brett.lagNyttRutenett();
         kanonEn = new Kanon(0, this, brett);
-        kanonTo = new Kanon(1, this, brett);
-        kanonTre = new Kanon(2, this, brett);
-        kanonFire = new Kanon(3, this, brett);
+        kanonTo = new Shotgun(1, this, brett);
+        kanonTre = new Shotgun(2, this, brett);
+        kanonFire = new Shotgun(3, this, brett);
         kanonFem = new Kanon(4, this, brett);
         nyRunde(antZombierPerRunde*runde);
         
@@ -82,7 +86,7 @@ public class Kontroll {
         brett.lagNyttRutenett();
         kanonEn = new Kanon(0, this, brett);
         kanonTo = new Kanon(1, this, brett);
-        kanonTre = new Kanon(2, this, brett);
+        kanonTre = new Shotgun(2, this, brett);
         kanonFire = new Kanon(3, this, brett);
         kanonFem = new Kanon(4, this, brett);
         nyRunde(antZombierPerRunde*runde);
@@ -108,6 +112,41 @@ public class Kontroll {
 
     public void oekScore(int poeng){
         score += poeng;
+        penger += poeng;
         brett.oppdaterScore(score);
+    }
+
+    public void oppgraderVaapen(int kanonNummer){
+        switch (kanonNummer){
+            case 1:
+                if (penger > kanonEn.hentSkade()*500)
+                kanonEn.oppgraderVaapen();
+                penger -= kanonEn.hentSkade()*500;
+                break;
+            
+            case 2:
+                if (penger > kanonTo.hentSkade()*500)
+                kanonTo.oppgraderVaapen();
+                penger -= kanonTo.hentSkade()*500;
+                break;
+
+            case 3:
+                if (penger > kanonTre.hentSkade()*500)
+                kanonTre.oppgraderVaapen();
+                penger -= kanonTre.hentSkade()*500;
+                break;
+
+            case 4:
+                if (penger > kanonFire.hentSkade()*500)
+                kanonFire.oppgraderVaapen();
+                penger -= kanonFire.hentSkade()*500;
+                break;
+
+            case 5:
+                if (penger > kanonFem.hentSkade()*500)
+                kanonFem.oppgraderVaapen();
+                penger -= kanonFem.hentSkade()*500; 
+                break;
+        }
     }
 }

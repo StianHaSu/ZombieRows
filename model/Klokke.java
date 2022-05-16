@@ -1,5 +1,7 @@
 package model;
 
+import model.ammunisjon.Kule;
+
 public class Klokke implements Runnable{
     Kule kulen;
     
@@ -11,7 +13,7 @@ public class Klokke implements Runnable{
     public void run() {
         boolean ikkeEnden = true;
         while (ikkeEnden && !kulen.sjekkTreff()){
-            try {Thread.sleep(50);} catch (Exception e){System.out.println(e);}
+            try {Thread.sleep(kulen.hentHurtighet());} catch (Exception e){System.out.println(e);}
             ikkeEnden = kulen.beveg();
         }
     }
