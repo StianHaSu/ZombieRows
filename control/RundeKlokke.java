@@ -27,5 +27,11 @@ public class RundeKlokke implements Runnable {
             kontroll.leggTilZombie(nyRask1);
 
         }
+
+        for (int e = 0; e < (int) antallZombier/4; e++){
+            int kolonne = (int)(Math.random()*(5-1-0+1))+0;
+            Zombie nyRask1 = new KraftigZombie(kontroll, kontroll.hentBrett(), kolonne, 3000);
+            kontroll.leggTilZombie(nyRask1);
+        }
     }
 }
