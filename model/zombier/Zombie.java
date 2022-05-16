@@ -21,10 +21,10 @@ public class Zombie {
 
     protected Color color = new Color(106,168,79);
 
-    public Zombie(Kontroll k, SpillBrett sb, int y, long hurtighet){
+    public Zombie(Kontroll k, SpillBrett sb, int x, int y, long hurtighet){
         kontroll = k;
         spillBrett = sb;
-        rad = 0;
+        rad = x;
         kolonne = y;
 
         this.hurtighet = hurtighet;
@@ -59,14 +59,14 @@ public class Zombie {
         return true;
     }
 
-    public void treff(){
-        helse--;
+    public void treff(int antSkade){
+        helse -= antSkade;
 
         if (helse < 1){
             sr[rad][kolonne].settBlank();
             sr[rad+1][kolonne].fjernHitBox();
             kontroll.fjernZombie(this);
-            kontroll.oekScore(5);
+            kontroll.oekScore(50);
         }
 
         kontroll.oekScore(15);

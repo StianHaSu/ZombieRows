@@ -10,15 +10,13 @@ import java.awt.event.*;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
-import javax.swing.ImageIcon;
-
 import java.io.File;
 
 public class SpillBrett{
     Kontroll kontroll;
-    JButton restart;
+    JButton restart, oppEn, oppTo, oppTre, oppFire, oppFem;
     JFrame ramme;
-    JPanel spillPanel, topp, panel;
+    JPanel spillPanel, topp, panel, underPanel, underKnapper;
     JLabel spillerStatus, score;
     SpilleRute[][] rutenett;
 
@@ -31,6 +29,19 @@ public class SpillBrett{
         topp = new JPanel();
         spillPanel = new JPanel();
         kontroll = k;
+
+
+        underPanel = new JPanel();
+        underKnapper = new JPanel();
+
+        underPanel.setLayout(new BorderLayout());
+        underKnapper.setLayout(new GridLayout(1, 5));
+
+        oppEn = new JButton("Oppgrader");
+        oppTo = new JButton("Oppgrader");
+        oppTre = new JButton("Oppgrader");
+        oppFire = new JButton("Oppgrader");
+        oppFem = new JButton("Oppgrader");
 
         spillerStatus = new JLabel(""+kontroll.hentHelse());
         spillerStatus.setHorizontalAlignment(JLabel.CENTER);
@@ -98,13 +109,41 @@ public class SpillBrett{
                 kontroll.startNyttSpill();
                 ramme.requestFocusInWindow();
             }
-        }   
+        } 
+        
+        class oppgraderKnapp implements ActionListener{
+            int kanonNummer; 
+            public oppgraderKnapp(int kanonNummer){
+                this.kanonNummer = kanonNummer;
+            } 
+
+            @Override
+            public void actionPerformed(ActionEvent ae){
+                kontroll.oppgraderVaapen(kanonNummer);
+                ramme.requestFocusInWindow();
+            }
+        }
 
         restart.addActionListener(new RestartKnapp());
 
+        oppEn.addActionListener(new oppgraderKnapp(1));
+        oppTo.addActionListener(new oppgraderKnapp(2));
+        oppTre.addActionListener(new oppgraderKnapp(3));
+        oppFire.addActionListener(new oppgraderKnapp(4));
+        oppFem.addActionListener(new oppgraderKnapp(5));
+
+        underKnapper.add(oppEn);
+        underKnapper.add(oppTo);
+        underKnapper.add(oppTre);
+        underKnapper.add(oppFire);
+        underKnapper.add(oppFem);
+
+        underPanel.add(underKnapper, BorderLayout.NORTH);
+        underPanel.add(spillerStatus, BorderLayout.CENTER);
+
         panel.add(spillPanel, BorderLayout.CENTER);
         panel.add(topp, BorderLayout.PAGE_START);
-        panel.add(spillerStatus, BorderLayout.PAGE_END);
+        panel.add(underPanel, BorderLayout.PAGE_END);
 
         ramme.requestFocusInWindow();
 
@@ -155,7 +194,7 @@ public class SpillBrett{
         rutenett[29][2].setBorder(BorderFactory.createLineBorder(Color.GRAY, 2));
         rutenett[29][3].setBorder(BorderFactory.createLineBorder(Color.GRAY, 2));
         rutenett[29][4].setBorder(BorderFactory.createLineBorder(Color.GRAY, 2));
-
+        
     }
 
     public void oppdaterScore(int nyScore){

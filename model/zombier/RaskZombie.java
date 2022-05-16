@@ -7,15 +7,15 @@ import java.awt.*;
 public class RaskZombie extends Zombie{
 
     public RaskZombie(Kontroll k, SpillBrett sb, int y, long hurtighet){
-        super(k, sb, y, hurtighet);
+        super(k, sb, 0, y, hurtighet);
         helse = 1;
         antSkade = 1;
         color = new Color(117,18,92);
     }
 
     @Override
-    public void treff(){
-        helse--;
+    public void treff(int antSkade){
+        helse -= antSkade;
 
         if (helse < 1){
             sr[rad][kolonne].settBlank();

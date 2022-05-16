@@ -7,7 +7,10 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import javax.swing.ImageIcon;
 
+import model.ammunisjon.Kule;
 import model.zombier.Zombie;
+
+import java.awt.*;
 
 import java.io.File;
 
@@ -31,15 +34,15 @@ public class SpilleRute extends JLabel{
 
     public void settKule(Kule k){
         if (zombie != null){
-            zombie.treff();
+            zombie.treff(k.hentSkade());
             k.harTruffet();
         }
         else if (hitBox != null){
-            hitBox.treff();
+            hitBox.treff(k.hentSkade());
             k.harTruffet();
         } else {
             kule = k;
-            this.setBackground(Color.YELLOW);
+            this.setBackground(k.hentFarge());
         }
     }
 
@@ -53,7 +56,7 @@ public class SpilleRute extends JLabel{
     public void settZombie(Zombie z){
         zombie = z;
         if (kule != null){
-            zombie.treff();
+            zombie.treff(kule.hentSkade());
         }
         if (zombie != null && zombie.hentHelse() > 0){
             this.setBackground(zombie.hentFarge());

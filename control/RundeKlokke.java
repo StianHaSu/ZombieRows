@@ -16,7 +16,7 @@ public class RundeKlokke implements Runnable {
     public void run(){
         for (int i = 0; i < antallZombier; i++){
             int kolonne = (int)(Math.random()*(5-1-0+1))+0;
-            Zombie ny = new Zombie(kontroll, kontroll.hentBrett(), kolonne, 1500);
+            Zombie ny = new Zombie(kontroll, kontroll.hentBrett(),0 , kolonne, 1500);
             kontroll.leggTilZombie(ny);
             long tid = (long)(Math.random()*(6000-4000-0+1))+0;
             try{Thread.sleep(tid);} catch (Exception e){System.out.println(e);}
@@ -27,11 +27,16 @@ public class RundeKlokke implements Runnable {
             kontroll.leggTilZombie(nyRask1);
 
         }
-
         for (int e = 0; e < (int) antallZombier/4; e++){
             int kolonne = (int)(Math.random()*(5-1-0+1))+0;
-            Zombie nyRask1 = new KraftigZombie(kontroll, kontroll.hentBrett(), kolonne, 3000);
-            kontroll.leggTilZombie(nyRask1);
+            Zombie nyKraftig = new KraftigZombie(kontroll, kontroll.hentBrett(), kolonne, 3000);
+            kontroll.leggTilZombie(nyKraftig);
+        }
+
+        for (int e = 0; e < (int) antallZombier/5; e++){
+            int kolonne = (int)(Math.random()*(5-1-0+1))+0;
+            Zombie nySplitter = new SplitterZombie(kontroll, kontroll.hentBrett(), kolonne, 3000);
+            kontroll.leggTilZombie(nySplitter);
         }
     }
 }
