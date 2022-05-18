@@ -15,9 +15,11 @@ public class Kontroll {
     ArrayList<Zombie> zombier = new ArrayList<>();
     Thread rundeKlokke = null;
 
+    boolean ferdigProdusere = false;
+
     int antZombierPerRunde = 5;
     int antZombier = 5;
-    int runde = 1;
+    int runde = 0;
 
     int score = 0;
     int penger = 0;
@@ -28,11 +30,11 @@ public class Kontroll {
         brett = new SpillBrett(this);
         brett.lagNyttRutenett();
         kanonEn = new Kanon(0, this, brett);
-        kanonTo = new Shotgun(1, this, brett);
-        kanonTre = new Shotgun(2, this, brett);
-        kanonFire = new Shotgun(3, this, brett);
+        kanonTo = new Kanon(1, this, brett);
+        kanonTre = new Kanon(2, this, brett);
+        kanonFire = new Kanon(3, this, brett);
         kanonFem = new Kanon(4, this, brett);
-        nyRunde(antZombierPerRunde*runde);
+        nyRunde();
         
     }
 
@@ -64,16 +66,16 @@ public class Kontroll {
 
     public void fjernZombie(Zombie z){
         zombier.remove(z);
-        antZombier--;
-        if (antZombier < 1){
-            runde++;
-            antZombier = antZombierPerRunde*runde;
-            nyRunde(antZombier);
+        if (zombier.size() < 1 && ferdigProdusere){
+            brett.visRundeSkjerm();
         }
     }
 
-    public void nyRunde(int antZombier){
-        rundeKlokke = new Thread(new RundeKlokke(this, antZombier));
+    public void nyRunde(){
+        runde++;
+        ferdigProdusere = false;
+        brett.fjernRundeSkjerm();
+        rundeKlokke = new Thread(new RundeKlokke(this, antZombierPerRunde*runde));
         rundeKlokke.start();
     }
 
@@ -89,12 +91,11 @@ public class Kontroll {
         kanonTre = new Shotgun(2, this, brett);
         kanonFire = new Kanon(3, this, brett);
         kanonFem = new Kanon(4, this, brett);
-        nyRunde(antZombierPerRunde*runde);
+        nyRunde();
     }
 
     public void leggTilZombie(Zombie z){
         zombier.add(z);
-        antZombier++;
     }
 
     public SpillBrett hentBrett(){
@@ -114,38 +115,51 @@ public class Kontroll {
         score += poeng;
         penger += poeng;
         brett.oppdaterScore(score);
+        brett.oppdaterPenger(penger);
+    }
+
+    public int hentPenger(){
+        return penger;
+    }
+
+    public int hentRunde(){
+        return runde;
+    }
+
+    public void ferdigProdusering(){
+        ferdigProdusere = true;
     }
 
     public void oppgraderVaapen(int kanonNummer){
         switch (kanonNummer){
             case 1:
-                if (penger > kanonEn.hentSkade()*500)
+                if (penger > kanonEn.hentKostnadForOppgradering())
+                penger -= kanonFire.hentKostnadForOppgradering();
                 kanonEn.oppgraderVaapen();
-                penger -= kanonEn.hentSkade()*500;
                 break;
             
             case 2:
-                if (penger > kanonTo.hentSkade()*500)
+                if (penger > kanonTo.hentKostnadForOppgradering())
+                penger -= kanonFire.hentKostnadForOppgradering();
                 kanonTo.oppgraderVaapen();
-                penger -= kanonTo.hentSkade()*500;
                 break;
 
             case 3:
-                if (penger > kanonTre.hentSkade()*500)
+                if (penger > kanonTre.hentKostnadForOppgradering())
+                penger -= kanonFire.hentKostnadForOppgradering();
                 kanonTre.oppgraderVaapen();
-                penger -= kanonTre.hentSkade()*500;
                 break;
 
             case 4:
-                if (penger > kanonFire.hentSkade()*500)
+                if (penger > kanonFire.hentKostnadForOppgradering())
+                penger -= kanonFire.hentKostnadForOppgradering();
                 kanonFire.oppgraderVaapen();
-                penger -= kanonFire.hentSkade()*500;
                 break;
 
             case 5:
-                if (penger > kanonFem.hentSkade()*500)
+                if (penger > kanonFem.hentKostnadForOppgradering())
+                penger -= kanonFem.hentKostnadForOppgradering(); 
                 kanonFem.oppgraderVaapen();
-                penger -= kanonFem.hentSkade()*500; 
                 break;
         }
     }

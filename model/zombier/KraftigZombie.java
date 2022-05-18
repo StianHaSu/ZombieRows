@@ -11,6 +11,7 @@ public class KraftigZombie extends Zombie{
         super(k, sb,0, y, hurtighet);
         helse = 10;
         color = new Color(196,52,26);
+        hurtighet = 3000;
     }
 
     @Override
@@ -18,10 +19,12 @@ public class KraftigZombie extends Zombie{
         helse -= antSkade;
 
         if (helse < 1){
-            sr[rad][kolonne].settBlank();
-            sr[rad+1][kolonne].fjernHitBox();
+            sr[rad][kolonne].fjernZombie(this);
+            sr[rad+1][kolonne].fjernHitBox(this);
             kontroll.fjernZombie(this);
             kontroll.oekScore(5);
+        } else {
+            sr[rad][kolonne].oppdaterRute();
         }
 
         kontroll.oekScore(100);

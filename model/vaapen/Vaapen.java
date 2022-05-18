@@ -6,4 +6,5 @@ public interface Vaapen {
     public void fjernKule(Kule k);
     public void oppgraderVaapen();
     public int hentSkade();
+    public int hentKostnadForOppgradering();
 }

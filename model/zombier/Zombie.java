@@ -43,7 +43,7 @@ public class Zombie {
         else {
             if (rad >= 29) kontroll.gjoerSkade();
             
-            sr[x1][kolonne].settBlank();
+            sr[x1][kolonne].fjernZombie(this);
             kontroll.fjernZombie(this);
 
             return false;
@@ -53,20 +53,23 @@ public class Zombie {
 
         sr[x2][kolonne].settZombie(this);
         if (rad < 28) sr[x2+1][kolonne].settHitBox(this);
-        sr[x2][kolonne].fjernHitBox();
-        sr[x1][kolonne].settBlank();
+        sr[x2][kolonne].fjernHitBox(this);
+        sr[x1][kolonne].fjernZombie(this);
         
         return true;
     }
 
     public void treff(int antSkade){
         helse -= antSkade;
-
         if (helse < 1){
-            sr[rad][kolonne].settBlank();
-            sr[rad+1][kolonne].fjernHitBox();
+            sr[rad][kolonne].fjernZombie(this);
+            sr[rad+1][kolonne].fjernHitBox(this);
             kontroll.fjernZombie(this);
             kontroll.oekScore(50);
+        }
+
+        else {
+            sr[rad][kolonne].oppdaterRute();
         }
 
         kontroll.oekScore(15);

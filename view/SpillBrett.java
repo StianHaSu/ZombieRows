@@ -14,22 +14,24 @@ import java.io.File;
 
 public class SpillBrett{
     Kontroll kontroll;
-    JButton restart, oppEn, oppTo, oppTre, oppFire, oppFem;
-    JFrame ramme;
-    JPanel spillPanel, topp, panel, underPanel, underKnapper;
-    JLabel spillerStatus, score;
+    JButton restart, oppEn, oppTo, oppTre, oppFire, oppFem, nesteRunde;
+    JFrame ramme,rundeSkjerm;
+    JPanel spillPanel, topp, panel, underPanel, underKnapper, rundePanel;
+    JLabel spillerStatus, score, penger, rundeInfo;
     SpilleRute[][] rutenett;
 
-    //ImageIcon kanonBilde;
-    //BufferedImage img;
+    boolean rundeVises = false;
 
     public SpillBrett(Kontroll k){
         ramme = new JFrame();
         panel = new JPanel();
         topp = new JPanel();
         spillPanel = new JPanel();
+        rundeSkjerm = new JFrame();
+        rundePanel = new JPanel();
         kontroll = k;
 
+        ramme.setFocusable(true);
 
         underPanel = new JPanel();
         underKnapper = new JPanel();
@@ -47,8 +49,8 @@ public class SpillBrett{
         spillerStatus.setHorizontalAlignment(JLabel.CENTER);
         spillerStatus.setPreferredSize(new Dimension(500, 40));
 
-        //try {img = ImageIO.read(new File("bilder/kanon.png"));} catch (Exception e){System.out.println(e);}
-        //kanonBilde = new ImageIcon(img);
+        penger = new JLabel("Penger: "+ kontroll.hentPenger());
+        penger.setHorizontalAlignment(JLabel.CENTER);
 
         restart = new JButton("Restart");
         restart.setPreferredSize(new Dimension(150, 40));
@@ -60,6 +62,7 @@ public class SpillBrett{
         topp.setLayout(new BorderLayout());
 
         topp.add(score, BorderLayout.EAST);
+        topp.add(penger, BorderLayout.CENTER);
         topp.add(restart, BorderLayout.WEST);
 
 
@@ -121,8 +124,50 @@ public class SpillBrett{
             public void actionPerformed(ActionEvent ae){
                 kontroll.oppgraderVaapen(kanonNummer);
                 ramme.requestFocusInWindow();
+                if (rundeVises) visRundeSkjerm();
             }
         }
+
+        class nyRundeKnapp implements ActionListener{
+
+            @Override
+            public void actionPerformed(ActionEvent ae){
+                kontroll.nyRunde();
+
+            }
+        }
+
+        class vaapenSkjerm implements FocusListener{
+
+            @Override
+            public void focusGained(FocusEvent e) {
+                
+                
+            }
+
+            @Override
+            public void focusLost(FocusEvent e) {
+                
+                
+            }
+            
+        }
+
+        nesteRunde = new JButton("Start neste Runde");
+        nesteRunde.addActionListener(new nyRundeKnapp());
+
+        rundeInfo = new JLabel("Du har fullfoer runde: "+kontroll.hentRunde());
+        rundeInfo.setHorizontalAlignment(JLabel.CENTER);
+        rundeInfo.setVerticalAlignment(JLabel.CENTER);
+
+        rundePanel.setPreferredSize(rundeSkjerm.getSize());
+        rundePanel.setLayout(new BorderLayout());
+
+        nesteRunde.setPreferredSize(new Dimension(500, 60));
+        nesteRunde.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+
+        rundePanel.add(rundeInfo, BorderLayout.NORTH);
+        rundePanel.add(nesteRunde, BorderLayout.SOUTH);
 
         restart.addActionListener(new RestartKnapp());
 
@@ -200,4 +245,27 @@ public class SpillBrett{
     public void oppdaterScore(int nyScore){
         score.setText("Score: "+nyScore);
     }
+
+    public void oppdaterPenger(int antPenger){
+        penger.setText("Penger: "+antPenger);
+    }
+
+    public void visRundeSkjerm(){
+        rundeVises = true;
+        rundeSkjerm.setPreferredSize(new Dimension((int) (ramme.getWidth()*0.7), (int) (ramme.getHeight()*0.3)));
+        rundeInfo.setText("Du har fullfoert runde: "+kontroll.hentRunde());
+        rundeSkjerm.add(rundePanel);
+        rundeSkjerm.pack();
+        rundeSkjerm.setLocationRelativeTo(ramme);
+        rundeSkjerm.setVisible(true);
+        
+    }
+
+    public void fjernRundeSkjerm(){
+        rundeSkjerm.setVisible(false);
+        rundeSkjerm.dispose();
+        rundeVises = false;
+
+    }
+
 }
