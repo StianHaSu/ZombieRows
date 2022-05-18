@@ -20,8 +20,8 @@ public class SplitterZombie extends Zombie{
         helse -= antSkade;
 
         if (helse < 1){
-            sr[rad][kolonne].settBlank();
-            sr[rad+1][kolonne].fjernHitBox();
+            sr[rad][kolonne].fjernZombie(this);
+            sr[rad+1][kolonne].fjernHitBox(this);
             kontroll.fjernZombie(this);
             kontroll.oekScore(50);
 
@@ -45,6 +45,8 @@ public class SplitterZombie extends Zombie{
                 kontroll.leggTilZombie(ny);
             }
 
+        } else {
+            sr[rad][kolonne].oppdaterRute();
         }
 
         kontroll.oekScore(15);

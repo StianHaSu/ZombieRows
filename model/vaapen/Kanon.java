@@ -11,6 +11,8 @@ public class Kanon implements Vaapen{
     int helse = 10;
     int skade = 1;
 
+    int oppgraderingsKostnad = 500;
+
     static int maksKuler = 8;
     static int antKuler = 0;
 
@@ -39,10 +41,16 @@ public class Kanon implements Vaapen{
 
     public void oppgraderVaapen(){
         skade++;
+        oppgraderingsKostnad += 500;
+        spillBrett.oppdaterPenger(kontroll.hentPenger());
     }
 
     public int hentSkade(){
         return skade;
+    }
+
+    public int hentKostnadForOppgradering(){
+        return oppgraderingsKostnad;
     }
 
 }

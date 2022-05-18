@@ -25,18 +25,23 @@ public class RundeKlokke implements Runnable {
             int kolonne = (int)(Math.random()*(5-1-0+1))+0;
             Zombie nyRask1 = new RaskZombie(kontroll, kontroll.hentBrett(), kolonne, 200);
             kontroll.leggTilZombie(nyRask1);
+            try{Thread.sleep(300);} catch (Exception e2){System.out.println(e2);}
 
         }
         for (int e = 0; e < (int) antallZombier/4; e++){
             int kolonne = (int)(Math.random()*(5-1-0+1))+0;
             Zombie nyKraftig = new KraftigZombie(kontroll, kontroll.hentBrett(), kolonne, 3000);
             kontroll.leggTilZombie(nyKraftig);
+            try{Thread.sleep(200);} catch (Exception e3){System.out.println(e3);}
         }
 
         for (int e = 0; e < (int) antallZombier/5; e++){
             int kolonne = (int)(Math.random()*(5-1-0+1))+0;
             Zombie nySplitter = new SplitterZombie(kontroll, kontroll.hentBrett(), kolonne, 3000);
             kontroll.leggTilZombie(nySplitter);
+            try{Thread.sleep(100);} catch (Exception e3){System.out.println(e3);}
         }
+
+        kontroll.ferdigProdusering();
     }
 }

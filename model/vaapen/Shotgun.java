@@ -8,6 +8,7 @@ public class Shotgun extends Kanon{
 
     public Shotgun(int pos, Kontroll k, SpillBrett sb) {
         super(pos, k, sb);
+        int oppgraderingsKostnad = 750;
     }
 
     @Override

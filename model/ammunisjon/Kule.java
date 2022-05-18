@@ -55,7 +55,6 @@ public class Kule {
 
     public void harTruffet(){
         vaapen.fjernKule(this);
-        sr[rad][kolonne].settBlank();
         harTruffet = true;
     }
 
