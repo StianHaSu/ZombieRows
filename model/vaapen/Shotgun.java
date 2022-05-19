@@ -21,5 +21,10 @@ public class Shotgun extends Kanon{
             if (pos+1 < 5) kulerSkutt.add(0,new ShotgunKule(pos+1, spillBrett, this)); 
         }
     }
+
+    @Override
+    public String toString(){
+        return "Shotgun";
+    }
     
 }

@@ -31,6 +31,7 @@ public class SpilleRute extends JLabel{
         this.y = y;
         gui = g;
         brett = gui.hentSpilleRuter();
+        this.setFocusable(true);
     }
 
     public void settKule(Kule k){

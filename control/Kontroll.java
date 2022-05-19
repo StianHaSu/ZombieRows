@@ -11,9 +11,12 @@ import java.util.ArrayList;
 
 public class Kontroll {
     SpillBrett brett;
-    Vaapen kanonEn, kanonTo, kanonTre, kanonFire, kanonFem;
+    Vaapen vaapenEn, vaapenTo, vaapenTre, vaapenFire, vaapenFem;
     ArrayList<Zombie> zombier = new ArrayList<>();
     Thread rundeKlokke = null;
+    Vaapen[][] vaapenListe = new Vaapen[5][2];
+
+    int vaapenValgt = 1;
 
     boolean ferdigProdusere = false;
 
@@ -29,11 +32,24 @@ public class Kontroll {
     public Kontroll(){
         brett = new SpillBrett(this);
         brett.lagNyttRutenett();
-        kanonEn = new Kanon(0, this, brett);
-        kanonTo = new Kanon(1, this, brett);
-        kanonTre = new Kanon(2, this, brett);
-        kanonFire = new Kanon(3, this, brett);
-        kanonFem = new Kanon(4, this, brett);
+
+        vaapenListe [0][0] = new Kanon(0, this, brett);
+        vaapenListe [1][0] = new Kanon(1, this, brett);
+        vaapenListe [2][0] = new Kanon(2, this, brett);
+        vaapenListe [3][0] = new Kanon(3, this, brett);
+        vaapenListe [4][0] = new Kanon(4, this, brett);
+
+        vaapenListe [0][1] = new Shotgun(0, this, brett);
+        vaapenListe [1][1] = new Shotgun(1, this, brett);
+        vaapenListe [2][1] = new Shotgun(2, this, brett);
+        vaapenListe [3][1] = new Shotgun(3, this, brett);
+        vaapenListe [4][1] = new Shotgun(4, this, brett);
+
+        vaapenEn = vaapenListe[0][0];
+        vaapenTo = vaapenListe[1][0];
+        vaapenTre = vaapenListe[2][0];
+        vaapenFire = vaapenListe[3][0];
+        vaapenFem = vaapenListe[4][0];
         nyRunde();
         
     }
@@ -41,23 +57,23 @@ public class Kontroll {
     public void skyt(int kanonNummer){
         switch (kanonNummer){
             case 1:
-                kanonEn.skyt();
+                vaapenEn.skyt();
                 break;
             
             case 2:
-                kanonTo.skyt();
+                vaapenTo.skyt();
                 break;
 
             case 3:
-                kanonTre.skyt();
+                vaapenTre.skyt();
                 break;
 
             case 4:
-                kanonFire.skyt();
+                vaapenFire.skyt();
                 break;
 
             case 5:
-                kanonFem.skyt();
+                vaapenFem.skyt();
                 break;
         }
 
@@ -86,11 +102,11 @@ public class Kontroll {
         brett.fjern();
         brett = new SpillBrett(this);
         brett.lagNyttRutenett();
-        kanonEn = new Kanon(0, this, brett);
-        kanonTo = new Kanon(1, this, brett);
-        kanonTre = new Shotgun(2, this, brett);
-        kanonFire = new Kanon(3, this, brett);
-        kanonFem = new Kanon(4, this, brett);
+        vaapenEn = vaapenListe[0][0];
+        vaapenTo = vaapenListe[1][0];
+        vaapenTre = vaapenListe[2][0];
+        vaapenFire = vaapenListe[3][0];
+        vaapenFem = vaapenListe[4][0];
         nyRunde();
     }
 
@@ -130,37 +146,78 @@ public class Kontroll {
         ferdigProdusere = true;
     }
 
-    public void oppgraderVaapen(int kanonNummer){
-        switch (kanonNummer){
+    public void velgVaapen(int kanonNummer){
+        vaapenValgt = kanonNummer;
+    }
+
+    public void oppgraderVaapen(){
+        switch (vaapenValgt){
             case 1:
-                if (penger > kanonEn.hentKostnadForOppgradering())
-                penger -= kanonFire.hentKostnadForOppgradering();
-                kanonEn.oppgraderVaapen();
+                if (penger > vaapenEn.hentKostnadForOppgradering())
+                penger -= vaapenEn.hentKostnadForOppgradering();
+                vaapenEn.oppgraderVaapen();
                 break;
             
             case 2:
-                if (penger > kanonTo.hentKostnadForOppgradering())
-                penger -= kanonFire.hentKostnadForOppgradering();
-                kanonTo.oppgraderVaapen();
+                if (penger > vaapenTo.hentKostnadForOppgradering())
+                penger -= vaapenTo.hentKostnadForOppgradering();
+                vaapenTo.oppgraderVaapen();
                 break;
 
             case 3:
-                if (penger > kanonTre.hentKostnadForOppgradering())
-                penger -= kanonFire.hentKostnadForOppgradering();
-                kanonTre.oppgraderVaapen();
+                if (penger > vaapenTre.hentKostnadForOppgradering())
+                penger -= vaapenTre.hentKostnadForOppgradering();
+                vaapenTre.oppgraderVaapen();
                 break;
 
             case 4:
-                if (penger > kanonFire.hentKostnadForOppgradering())
-                penger -= kanonFire.hentKostnadForOppgradering();
-                kanonFire.oppgraderVaapen();
+                if (penger > vaapenFire.hentKostnadForOppgradering())
+                penger -= vaapenFire.hentKostnadForOppgradering();
+                vaapenFire.oppgraderVaapen();
                 break;
 
             case 5:
-                if (penger > kanonFem.hentKostnadForOppgradering())
-                penger -= kanonFem.hentKostnadForOppgradering(); 
-                kanonFem.oppgraderVaapen();
+                if (penger > vaapenFem.hentKostnadForOppgradering())
+                penger -= vaapenFem.hentKostnadForOppgradering(); 
+                vaapenFem.oppgraderVaapen();
                 break;
         }
+    }
+    
+    public void settVaapen(int vaapenType){
+        switch (vaapenValgt){
+            case 1:
+                vaapenEn = vaapenListe[0][vaapenType];
+                brett.oppEn.setText(vaapenEn.toString());
+                break;
+            
+            case 2:
+                vaapenTo = vaapenListe[1][vaapenType];
+                brett.oppTo.setText(vaapenTo.toString());
+                break;
+
+            case 3:
+                vaapenTre = vaapenListe[2][vaapenType];
+                brett.oppTre.setText(vaapenTre.toString());
+                break;
+
+            case 4:
+                vaapenFire = vaapenListe[3][vaapenType];
+                brett.oppFire.setText(vaapenFire.toString());
+                break;
+
+            case 5:
+                vaapenFem = vaapenListe[4][vaapenType];
+                brett.oppFem.setText(vaapenFem.toString());
+                break;
+        }
+    }
+
+    public void visRundeSkjerm(){
+        brett.visRundeSkjerm();
+    }
+
+    public boolean sjekkRundeskjermVises(){
+        return brett.rundeSkjermVises();
     }
 }

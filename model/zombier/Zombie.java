@@ -39,9 +39,9 @@ public class Zombie {
     public boolean beveg(){
         int x1 = rad;
         
-        if (rad < 29 && helse > 0)rad++;
+        if (rad < 28 && helse > 0)rad++;
         else {
-            if (rad >= 29) kontroll.gjoerSkade();
+            if (rad >= 28) kontroll.gjoerSkade();
             
             sr[x1][kolonne].fjernZombie(this);
             kontroll.fjernZombie(this);
