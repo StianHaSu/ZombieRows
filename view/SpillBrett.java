@@ -14,9 +14,9 @@ import java.io.File;
 
 public class SpillBrett{
     Kontroll kontroll;
-    JButton restart, oppEn, oppTo, oppTre, oppFire, oppFem, nesteRunde;
-    JFrame ramme,rundeSkjerm;
-    JPanel spillPanel, topp, panel, underPanel, underKnapper, rundePanel;
+    public JButton restart, oppEn, oppTo, oppTre, oppFire, oppFem, nesteRunde, kanonKnapp, shotgunKnapp, oppgradering;
+    JFrame ramme, rundeSkjerm, vaapenSkjerm;
+    JPanel spillPanel, topp, panel, underPanel, underKnapper, rundePanel, vaapenPanel, zombiePanel, underPaddingEn, underPaddingTo;
     JLabel spillerStatus, score, penger, rundeInfo;
     SpilleRute[][] rutenett;
 
@@ -29,6 +29,9 @@ public class SpillBrett{
         spillPanel = new JPanel();
         rundeSkjerm = new JFrame();
         rundePanel = new JPanel();
+        vaapenSkjerm = new JFrame();
+        vaapenPanel = new JPanel();
+        zombiePanel = new JPanel();
         kontroll = k;
 
         ramme.setFocusable(true);
@@ -37,13 +40,25 @@ public class SpillBrett{
         underKnapper = new JPanel();
 
         underPanel.setLayout(new BorderLayout());
-        underKnapper.setLayout(new GridLayout(1, 5));
+        underKnapper.setLayout(new GridLayout(1, 7));
 
-        oppEn = new JButton("Oppgrader");
-        oppTo = new JButton("Oppgrader");
-        oppTre = new JButton("Oppgrader");
-        oppFire = new JButton("Oppgrader");
-        oppFem = new JButton("Oppgrader");
+        oppEn = new JButton("Kanon");
+        oppTo = new JButton("Kanon");
+        oppTre = new JButton("Kanon");
+        oppFire = new JButton("Kano");
+        oppFem = new JButton("Kanon");
+
+        oppgradering = new JButton("Oppgrader");
+
+        kanonKnapp = new JButton("Kanon");
+        kanonKnapp.setHorizontalAlignment(JButton.CENTER);
+        kanonKnapp.setPreferredSize(new Dimension(120, 40));
+        kanonKnapp.addActionListener(new VelgVapen(0, kontroll, ramme));
+
+        shotgunKnapp = new JButton("Shotgun");
+        shotgunKnapp.setHorizontalAlignment(JButton.CENTER);
+        shotgunKnapp.setPreferredSize(new Dimension(120, 40));
+        shotgunKnapp.addActionListener(new VelgVapen(1, kontroll, ramme));
 
         spillerStatus = new JLabel(""+kontroll.hentHelse());
         spillerStatus.setHorizontalAlignment(JLabel.CENTER);
@@ -67,38 +82,57 @@ public class SpillBrett{
 
 
         spillPanel.setLayout(new GridLayout(30, 5));
-        spillPanel.setPreferredSize(new Dimension(500, 1000));
+        spillPanel.setPreferredSize(new Dimension(700, 1000));
         
         ramme.setFocusable(true);
         ramme.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         ramme.setLocationRelativeTo(null);
+
+        //vaapenSkjerm.setDefaultCloseOperation();
 
         ramme.addKeyListener(new KeyAdapter(){
             @Override
             public void keyPressed(KeyEvent event){
                 if (event.getKeyCode() == KeyEvent.VK_1) {
                     kontroll.skyt(1);
+                    kontroll.velgVaapen(1);
                 }
             
                 else if (event.getKeyCode() == KeyEvent.VK_2) {
                     kontroll.skyt(2);
+                    kontroll.velgVaapen(2);
                 }
             
                 else if (event.getKeyCode() == KeyEvent.VK_3) {
                     kontroll.skyt(3);
+                    kontroll.velgVaapen(3);
                 }
             
                 else if (event.getKeyCode() == KeyEvent.VK_4 || event.getKeyCode() == KeyEvent.VK_KP_DOWN) {
                     kontroll.skyt(4);
+                    kontroll.velgVaapen(4);
                 }
 
                 else if (event.getKeyCode() == KeyEvent.VK_5) {
                     kontroll.skyt(5);
+                    kontroll.velgVaapen(5);
+                }
+
+                else if (event.getKeyCode() == KeyEvent.VK_UP){
+                    kontroll.settVaapen(1);
+                }
+
+                else if (event.getKeyCode() == KeyEvent.VK_DOWN){
+                    kontroll.settVaapen(0);
                 }
             }
         
             @Override
-            public void keyTyped(KeyEvent e) {       
+            public void keyTyped(KeyEvent e) {      
+                if (e.getKeyCode() == KeyEvent.VK_S){
+                    kontroll.velgVaapen(2);
+                }
+
             }
         
             @Override
@@ -115,14 +149,9 @@ public class SpillBrett{
         } 
         
         class oppgraderKnapp implements ActionListener{
-            int kanonNummer; 
-            public oppgraderKnapp(int kanonNummer){
-                this.kanonNummer = kanonNummer;
-            } 
-
             @Override
             public void actionPerformed(ActionEvent ae){
-                kontroll.oppgraderVaapen(kanonNummer);
+                kontroll.oppgraderVaapen();
                 ramme.requestFocusInWindow();
                 if (rundeVises) visRundeSkjerm();
             }
@@ -137,21 +166,6 @@ public class SpillBrett{
             }
         }
 
-        class vaapenSkjerm implements FocusListener{
-
-            @Override
-            public void focusGained(FocusEvent e) {
-                
-                
-            }
-
-            @Override
-            public void focusLost(FocusEvent e) {
-                
-                
-            }
-            
-        }
 
         nesteRunde = new JButton("Start neste Runde");
         nesteRunde.addActionListener(new nyRundeKnapp());
@@ -171,22 +185,40 @@ public class SpillBrett{
 
         restart.addActionListener(new RestartKnapp());
 
-        oppEn.addActionListener(new oppgraderKnapp(1));
-        oppTo.addActionListener(new oppgraderKnapp(2));
-        oppTre.addActionListener(new oppgraderKnapp(3));
-        oppFire.addActionListener(new oppgraderKnapp(4));
-        oppFem.addActionListener(new oppgraderKnapp(5));
+        oppEn.addActionListener(new VaapenMeny(1, vaapenPanel, kontroll, ramme));
+        oppTo.addActionListener(new VaapenMeny(2, vaapenPanel, kontroll, ramme));
+        oppTre.addActionListener(new VaapenMeny(3, vaapenPanel, kontroll, ramme));
+        oppFire.addActionListener(new VaapenMeny(4, vaapenPanel, kontroll, ramme));
+        oppFem.addActionListener(new VaapenMeny(5, vaapenPanel, kontroll, ramme));
 
-        underKnapper.add(oppEn);
-        underKnapper.add(oppTo);
-        underKnapper.add(oppTre);
-        underKnapper.add(oppFire);
-        underKnapper.add(oppFem);
+        underPaddingEn = new JPanel();
+        underPaddingEn.setPreferredSize(new Dimension(100, 40));
 
-        underPanel.add(underKnapper, BorderLayout.NORTH);
-        underPanel.add(spillerStatus, BorderLayout.CENTER);
+        underPaddingTo = new JPanel();
+        underPaddingTo.setPreferredSize(new Dimension(100, 40));
 
+        oppEn.setPreferredSize(new Dimension(100, 40));
+        oppTo.setPreferredSize(new Dimension(100, 40));
+        oppTre.setPreferredSize(new Dimension(100, 40));
+        oppFire.setPreferredSize(new Dimension(100, 40));
+        oppFem.setPreferredSize(new Dimension(100, 40));
+        oppgradering.addActionListener(new oppgraderKnapp());
+        
+        vaapenPanel.setLayout(new GridLayout(3,1));
+        vaapenPanel.add(kanonKnapp);
+        vaapenPanel.add(shotgunKnapp);
+        vaapenPanel.add(oppgradering);
+        vaapenPanel.setPreferredSize(new Dimension(100, 1000));
+
+        zombiePanel.setPreferredSize(new Dimension(100, 1000));
+
+        underPanel.add(spillerStatus, BorderLayout.SOUTH);
+        underPanel.add(underPaddingEn, BorderLayout.EAST);
+        underPanel.add(underPaddingTo, BorderLayout.WEST);
+
+        panel.add(zombiePanel, BorderLayout.EAST);
         panel.add(spillPanel, BorderLayout.CENTER);
+        panel.add(vaapenPanel, BorderLayout.WEST);
         panel.add(topp, BorderLayout.PAGE_START);
         panel.add(underPanel, BorderLayout.PAGE_END);
 
@@ -211,9 +243,9 @@ public class SpillBrett{
     }
 
     public void lagNyttRutenett(){
-        rutenett = new SpilleRute[30][5];
+        rutenett = new SpilleRute[29][5];
 
-        for (int i = 0; i < 30; i++){
+        for (int i = 0; i < 29; i++){
             for (int e = 0; e < 5; e++){
                 SpilleRute ny = new SpilleRute(i, e, this);
                 ny.setHorizontalAlignment(JLabel.CENTER);
@@ -228,17 +260,11 @@ public class SpillBrett{
             }
         }
 
-        rutenett[29][0].setBackground(Color.BLACK);
-        rutenett[29][1].setBackground(Color.BLACK);
-        rutenett[29][2].setBackground(Color.BLACK);
-        rutenett[29][3].setBackground(Color.BLACK);
-        rutenett[29][4].setBackground(Color.BLACK);
-
-        rutenett[29][0].setBorder(BorderFactory.createLineBorder(Color.GRAY, 2));
-        rutenett[29][1].setBorder(BorderFactory.createLineBorder(Color.GRAY, 2));
-        rutenett[29][2].setBorder(BorderFactory.createLineBorder(Color.GRAY, 2));
-        rutenett[29][3].setBorder(BorderFactory.createLineBorder(Color.GRAY, 2));
-        rutenett[29][4].setBorder(BorderFactory.createLineBorder(Color.GRAY, 2));
+        spillPanel.add(oppEn);
+        spillPanel.add(oppTo);
+        spillPanel.add(oppTre);
+        spillPanel.add(oppFire);
+        spillPanel.add(oppFem);
         
     }
 
@@ -266,6 +292,10 @@ public class SpillBrett{
         rundeSkjerm.dispose();
         rundeVises = false;
 
+    }
+
+    public boolean rundeSkjermVises(){
+        return rundeVises;
     }
 
 }

@@ -53,4 +53,9 @@ public class Kanon implements Vaapen{
         return oppgraderingsKostnad;
     }
 
+    @Override
+    public String toString(){
+        return "Kanon";
+    }
+
 }
